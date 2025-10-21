@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>649</width>
+    <height>436</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Hindi Alphabet Helper</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_root" stretch="0,1,0">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="leftMargin">
+     <number>4</number>
+    </property>
+    <property name="topMargin">
+     <number>4</number>
+    </property>
+    <property name="rightMargin">
+     <number>4</number>
+    </property>
+    <property name="bottomMargin">
+     <number>4</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="categoryLabel">
+      <property name="text">
+       <string>स्वर / व्यंजन</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_panel">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>2</number>
+      </property>
+      <item row="0" column="0" colspan="2" alignment="Qt::AlignmentFlag::AlignLeft">
+       <widget class="QWidget" name="symbolStack" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_symbolStack">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="symbolLabel">
+           <property name="font">
+            <font>
+             <family>Kohinoor Devanagari</family>
+             <pointsize>180</pointsize>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>अ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="pronEngContainer" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_pronEng">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="pronLabel">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>36</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>a</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="engLabel">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>24</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: #555;</string>
+              </property>
+              <property name="text">
+               <string>as in &quot;America&quot;</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="2" alignment="Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignVCenter">
+       <widget class="QWidget" name="filterContainer" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_filterContainer">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item alignment="Qt::AlignmentFlag::AlignVCenter">
+          <widget class="QGroupBox" name="filterGroup">
+           <property name="title">
+            <string>Mode</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_filter">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="leftMargin">
+             <number>6</number>
+            </property>
+            <property name="topMargin">
+             <number>6</number>
+            </property>
+            <property name="rightMargin">
+             <number>6</number>
+            </property>
+            <property name="bottomMargin">
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="rbVowels">
+              <property name="text">
+               <string>Vowels</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rbConsonants">
+              <property name="text">
+               <string>Consonants</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="rbBoth">
+              <property name="text">
+               <string>Both</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="audioGroup">
+           <property name="title">
+            <string>Rate</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_audio">
+            <property name="spacing"><number>6</number></property>
+            <property name="leftMargin"><number>6</number></property>
+            <property name="topMargin"><number>6</number></property>
+            <property name="rightMargin"><number>6</number></property>
+            <property name="bottomMargin"><number>6</number></property>
+
+            <!-- Row 1: slider and current value -->
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_rateRow">
+              <property name="spacing"><number>8</number></property>
+              <item>
+               <widget class="QSlider" name="sliderRate">
+                <property name="minimum"><number>20</number></property>
+                <property name="maximum"><number>220</number></property>
+                <property name="singleStep"><number>20</number></property>
+                <property name="pageStep"><number>20</number></property>
+                <property name="value"><number>170</number></property>
+                <property name="orientation"><enum>Qt::Orientation::Horizontal</enum></property>
+                <property name="tickPosition"><enum>QSlider::TickPosition::TicksBelow</enum></property>
+                <property name="tickInterval"><number>20</number></property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblRateValue">
+                <property name="text"><string>170</string></property>
+                <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignVCenter</set></property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+
+            <!-- Row 2: Slower / Faster buttons -->
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_rateButtons">
+              <property name="spacing"><number>8</number></property>
+              <item>
+               <spacer name="rateButtonsLeftSpacer">
+                <property name="orientation"><enum>Qt::Orientation::Horizontal</enum></property>
+                <property name="sizeType"><enum>QSizePolicy::Expanding</enum></property>
+                <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+               </spacer>
+              </item>
+              <item>
+              <widget class="QToolButton" name="btnSlower">
+               <property name="icon">
+                <iconset>
+                 <normaloff>:/qt-project.org/styles/commonstyle/images/media-seek-backward-32.png</normaloff>:/qt-project.org/styles/commonstyle/images/media-seek-backward-32.png</iconset>
+               </property>
+               <property name="toolTip"><string>Decrease speaking rate by 20</string></property>
+              </widget>
+              </item>
+              <item>
+              <widget class="QToolButton" name="btnFaster">
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/qt-project.org/styles/commonstyle/images/media-seek-forward-32.png</normaloff>:/qt-project.org/styles/commonstyle/images/media-seek-forward-32.png</iconset>
+                </property>
+                <property name="toolTip"><string>Increase speaking rate by 20</string></property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="rateButtonsRightSpacer">
+                <property name="orientation"><enum>Qt::Orientation::Horizontal</enum></property>
+                <property name="sizeType"><enum>QSizePolicy::Expanding</enum></property>
+                <property name="sizeHint" stdset="0"><size><width>0</width><height>0</height></size></property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_controls">
+      <item>
+       <widget class="QPushButton" name="prev_btn">
+        <property name="text">
+         <string>◀ Previous</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="play_btn">
+        <property name="text">
+         <string>Play ▶</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="next_btn">
+        <property name="text">
+         <string>Next ▶</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>549</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
