@@ -1,0 +1,80 @@
+# --- OS / Editor -------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# VS Code (if present)
+.vscode/
+
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Env files / secrets (if used)
+.env
+.env.*
+!.env.example
+
+# Packaging / build
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+*.spec
+
+# Type checking / testing / coverage
+.mypy_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.pytype/
+.dmypy.json
+.pyre/
+
+# Caches
+.cache/
+
+# Logs
+*.log
+logs/
+
+# --- Qt / PyQt --------------------------------------------------------------
+# Qt intermediate artifacts
+*.qmlc
+*.jsc
+
+# If you generate Qt resource modules from .qrc, ignore the generated files:
+# (Uncomment if they are auto-generated and not hand-edited.)
+# *_rc.py
+
+# Qt Creator / Designer user files
+*.user
+*.autosave
+
+# --- Project-specific --------------------------------------------------------
+# Runtime user prefs created by the app
+user_prefs.json
+
+# If you keep large audio assets out of git, uncomment below:
+# assets/audio/*.wav
+# !assets/audio/README.md
+
+# If you generate compiled UI python files from .ui (you currently load .ui at runtime),
+# you could ignore them:
+# ui/*_ui.py
