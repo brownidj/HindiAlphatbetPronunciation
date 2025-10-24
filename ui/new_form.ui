@@ -705,11 +705,175 @@
                             </layout>
                         </widget>
                     </item>
+
+                    <item>
+                        <spacer name="spacer_btnResetDefaults">
+                            <property name="orientation">
+                                <enum>Qt::Orientation::Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>QSizePolicy::Policy::Fixed</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                                <size>
+                                    <width>20</width>
+                                    <height>24</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </item>
                     <item>
                         <widget class="QPushButton" name="btnResetDefaults">
                             <property name="text">
                                 <string>Reset to Defaults</string>
                             </property>
+                        </widget>
+                    </item>
+                    <item>
+                      <spacer name="spacer_aboveTtsTiming">
+                        <property name="orientation">
+                          <enum>Qt::Orientation::Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                          <enum>QSizePolicy::Policy::Fixed</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                          <size>
+                            <width>20</width>
+                            <height>24</height>
+                          </size>
+                        </property>
+                      </spacer>
+                    </item>
+                    <item>
+                        <widget class="QGroupBox" name="ttsTimingGroup">
+                            <property name="title">
+                                <string>Playback Timing</string>
+                            </property>
+                            <layout class="QVBoxLayout" name="verticalLayout_ttsTiming">
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <item>
+                                    <layout class="QHBoxLayout" name="horizontalLayout_repeats">
+                                        <item>
+                                            <widget class="QLabel" name="labelRepeats">
+                                                <property name="text">
+                                                    <string>Repeats:</string>
+                                                </property>
+                                                <property name="toolTip">
+                                                    <string>Number of times each sound is spoken</string>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item>
+                                            <widget class="QSpinBox" name="spinTTSRepeats">
+                                                <property name="minimum">
+                                                    <number>1</number>
+                                                </property>
+                                                <property name="maximum">
+                                                    <number>10</number>
+                                                </property>
+                                                <property name="value">
+                                                    <number>3</number>
+                                                </property>
+                                                <property name="readOnly">
+                                                    <bool>true</bool>
+                                                </property>
+                                                <property name="keyboardTracking">
+                                                    <bool>false</bool>
+                                                </property>
+                                                <property name="focusPolicy">
+                                                    <enum>Qt::FocusPolicy::NoFocus</enum>
+                                                </property>
+                                                <property name="buttonSymbols">
+                                                    <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item>
+                                            <spacer name="repeatsRowSpacer">
+                                                <property name="orientation">
+                                                    <enum>Qt::Orientation::Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>QSizePolicy::Policy::Expanding</enum>
+                                                </property>
+                                                <property name="sizeHint" stdset="0">
+                                                    <size>
+                                                        <width>20</width>
+                                                        <height>10</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </item>
+                                    </layout>
+                                </item>
+                                <item>
+                                    <layout class="QHBoxLayout" name="horizontalLayout_delay">
+                                        <item>
+                                            <widget class="QLabel" name="labelDelay">
+                                                <property name="text">
+                                                    <string>Delay before play:</string>
+                                                </property>
+                                                <property name="toolTip">
+                                                    <string>Gap before the first repeat starts</string>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item>
+                                            <widget class="QDoubleSpinBox" name="spinTTSDelay">
+                                                <property name="decimals">
+                                                    <number>1</number>
+                                                </property>
+                                                <property name="minimum">
+                                                    <number>1</number>
+                                                </property>
+                                                <property name="maximum">
+                                                    <number>6</number>
+                                                </property>
+                                                <property name="singleStep">
+                                                    <number>1</number>
+                                                </property>
+                                                <property name="value">
+                                                    <number>2</number>
+                                                </property>
+                                                <property name="suffix">
+                                                    <string> sec</string>
+                                                </property>
+                                                <property name="readOnly">
+                                                    <bool>true</bool>
+                                                </property>
+                                                <property name="keyboardTracking">
+                                                    <bool>false</bool>
+                                                </property>
+                                                <property name="focusPolicy">
+                                                    <enum>Qt::FocusPolicy::NoFocus</enum>
+                                                </property>
+                                                <property name="buttonSymbols">
+                                                    <enum>QAbstractSpinBox::ButtonSymbols::UpDownArrows</enum>
+                                                </property>
+                                            </widget>
+                                        </item>
+                                        <item>
+                                            <spacer name="delayRowSpacer">
+                                                <property name="orientation">
+                                                    <enum>Qt::Orientation::Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>QSizePolicy::Policy::Expanding</enum>
+                                                </property>
+                                                <property name="sizeHint" stdset="0">
+                                                    <size>
+                                                        <width>20</width>
+                                                        <height>10</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </item>
+                                    </layout>
+                                </item>
+                            </layout>
                         </widget>
                     </item>
                     <item>

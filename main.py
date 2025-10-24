@@ -24,24 +24,25 @@ Dev deps (add to requirements-dev.txt):
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 import os
 import re
 import sys
 import unicodedata
-import html
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, cast
 
 import yaml
+
 # Optional advanced regex for grapheme cluster segmentation
 try:
     import regex as _REGEX  # type: ignore
 except Exception:
     _REGEX = None
-from PyQt6 import QtCore
+from PyQt6 import QtCore, QtGui
 from PyQt6 import uic
 from PyQt6.QtCore import QSize, QPoint, Qt
 from PyQt6.QtGui import QFont, QIcon, QPixmap, QPainter, QColor, QPen, QFontMetrics
@@ -57,6 +58,9 @@ from PyQt6.QtWidgets import (
     QRadioButton,
     QCheckBox,
     QSizePolicy,
+    QSpinBox,
+    QDoubleSpinBox,
+    QAbstractSpinBox,
 )
 
 from settings import (CURRENT_TTS_RATE,
@@ -100,14 +104,15 @@ class HindiLetter:
     letter_type: Optional[str] = None  # "vowel" | "consonant"
     dependent_form: Optional[str] = None
     hint: Optional[str] = None
-    example: Optional[str] = None      # full example line, e.g., "इंद्रधनुष (indradhanush) – Rainbow"
+    example: Optional[str] = None  # full example line, e.g., "इंद्रधनुष (indradhanush) – Rainbow"
     example_translit: Optional[str] = None  # e.g., "indradhanush"
-    example_noun: Optional[str] = None      # e.g., "rainbow"
+    example_noun: Optional[str] = None  # e.g., "rainbow"
     dependent_form_example: Optional[str] = None  # e.g., "का (kā) – Crow"
 
 
 class ExampleMatraPointer(QWidget):
     """Draws a small arrow under the cluster containing the given matra in the left Hindi part of an example."""
+
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self._left_text: str = ""
@@ -547,10 +552,14 @@ class MainWindow(QMainWindow):
 
         # Build UI in code to ensure an immediate run; swap to uic.loadUi later if desired.
         uic.loadUi("ui/new_form.ui", self)
+        # Capture clicks anywhere in the window to potentially auto-hide settings
+        try:
+            self.installEventFilter(self)
+        except Exception:
+            pass
         # Bind critical widgets early so they exist before styling/logic
         self.image_label = cast(QLabel, self.findChild(QLabel, "imagePlaceholder"))
         self.status_hint = cast(QLabel, self.findChild(QLabel, "statusHint"))
-
 
         # Ensure settingsDock starts hidden
         dock = self.findChild(QWidget, "settingsDock")
@@ -587,6 +596,14 @@ class MainWindow(QMainWindow):
                 self.dependent_form_label.setVisible(False)
             except Exception:
                 pass
+        if self.dependent_form_label is not None:
+            try:
+                self.dependent_form_label.setToolTip(
+                    "Matras (dependent forms of vowels) are special symbols that modify consonants to indicate the vowel sound that follows.\n"
+                    "For example: The independent vowel आ (aa) has the dependent form ‘ा’, which attaches to consonants like क → का (kā)."
+                )
+            except Exception:
+                pass
 
         # Matra pointer: a tiny indicator under the example/caption
         self.matra_pointer = ExampleMatraPointer(self)
@@ -608,7 +625,6 @@ class MainWindow(QMainWindow):
                 LOGGER.warning("matraPointerContainer not found; arrow may not display.")
         except Exception as exc:
             LOGGER.warning("Failed to insert matra pointer into container: %s", exc)
-
 
         # Bind typed Designer widgets for static analysis and autocompletion
         self.prev_btn = cast(QPushButton, self.findChild(QPushButton, "prev_btn"))
@@ -722,6 +738,165 @@ class MainWindow(QMainWindow):
         if self.rb_both is not None:
             self.rb_both.toggled.connect(lambda checked: checked and self.on_filter_changed("both"))
 
+        # --- Initialize and wire TTS timing spin boxes (Repeats, Delay)
+        try:
+            self.spin_tts_repeats = cast(QSpinBox, self.findChild(QSpinBox, "spinTTSRepeats"))
+        except Exception:
+            self.spin_tts_repeats = None  # type: ignore
+        try:
+            self.spin_tts_delay = cast(QDoubleSpinBox, self.findChild(QDoubleSpinBox, "spinTTSDelay"))
+        except Exception:
+            self.spin_tts_delay = None  # type: ignore
+
+        try:
+            if self.spin_tts_repeats is not None:
+                self.spin_tts_repeats.setRange(1, 10)
+                self.spin_tts_repeats.setValue(int(TTS_REPEATS))
+                # Ensure arrows are visible and usable
+                try:
+                    self.spin_tts_repeats.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+                except Exception:
+                    pass
+                # Make the spinbox widget itself editable (so arrows work), but keep the line-edit read-only
+                try:
+                    self.spin_tts_repeats.setReadOnly(False)
+                    self.spin_tts_repeats.setAccelerated(True)
+                    try:
+                        ro = self.spin_tts_repeats.isReadOnly()
+                    except Exception:
+                        ro = None
+                    LOGGER.info("spinTTSRepeats: isReadOnly(widget)=%s", ro)
+                except Exception:
+                    pass
+                # Allow arrow clicks, but prevent text focus/edits
+                try:
+                    self.spin_tts_repeats.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+                    le = self.spin_tts_repeats.lineEdit()
+                    if le is not None:
+                        le.setReadOnly(True)
+                        le.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+                        le.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+                except Exception:
+                    pass
+                # Connect change handler
+                self.spin_tts_repeats.valueChanged.connect(self._on_tts_repeats_changed)
+                LOGGER.info("Connecting spinTTSRepeats.valueChanged -> _on_tts_repeats_changed")
+                try:
+                    self.spin_tts_repeats.installEventFilter(self)
+                except Exception:
+                    pass
+                self._debug_spinbox(self.spin_tts_repeats, 'spinTTSRepeats:post-bind')
+                try:
+                    self.spin_tts_repeats.setEnabled(True)
+                except Exception:
+                    pass
+        except Exception as exc:
+            LOGGER.warning("Failed to initialize spinTTSRepeats: %s", exc)
+
+        # --- Repeats (QSpinBox): 1..10, step 1
+        try:
+            if self.spin_tts_repeats is not None:
+                self.spin_tts_repeats.setRange(1, 10)
+                self.spin_tts_repeats.setSingleStep(1)
+                self.spin_tts_repeats.setWrapping(False)
+                self.spin_tts_repeats.setValue(int(TTS_REPEATS))
+                try:
+                    self.spin_tts_repeats.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+                    self.spin_tts_repeats.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+                    le = self.spin_tts_repeats.lineEdit()
+                    if le is not None:
+                        le.setReadOnly(True)  # disable typing
+                        le.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+                        le.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+                except Exception:
+                    pass
+                self._debug_spinbox(self.spin_tts_repeats, 'spinTTSRepeats:init')
+                self.spin_tts_repeats.valueChanged.connect(self._on_tts_repeats_changed)
+            else:
+                LOGGER.warning("spinTTSRepeats not found")
+        except Exception as exc:
+            LOGGER.warning("Failed to initialize spinTTSRepeats: %s", exc)
+
+        # --- Delay (seconds): integer 1..6. Accept either QDoubleSpinBox or QSpinBox named spinTTSDelay.
+        try:
+            delay_widget = None
+            try:
+                delay_widget = cast(QDoubleSpinBox, self.findChild(QDoubleSpinBox, "spinTTSDelay"))
+            except Exception:
+                delay_widget = None
+            if delay_widget is None:
+                try:
+                    delay_widget = cast(QSpinBox, self.findChild(QSpinBox, "spinTTSDelay"))
+                except Exception:
+                    delay_widget = None
+            self.spin_tts_delay = delay_widget
+
+            if self.spin_tts_delay is not None:
+                # Convert stored microseconds -> integer seconds in [1..6]
+                try:
+                    raw = float(TTS_DELAY)
+                    secs = int(round(raw / 1_000_000.0)) if raw > 50 else int(round(raw))
+                except Exception:
+                    secs = 2
+                secs = max(1, min(6, secs))
+
+                if isinstance(self.spin_tts_delay, QDoubleSpinBox):
+                    self.spin_tts_delay.setDecimals(0)
+                    self.spin_tts_delay.setRange(1.0, 6.0)
+                    self.spin_tts_delay.setSingleStep(1.0)
+                    try:
+                        self.spin_tts_delay.setSuffix(" sec")
+                    except Exception:
+                        pass
+                    self.spin_tts_delay.setValue(float(secs))
+                else:  # QSpinBox
+                    self.spin_tts_delay.setRange(1, 6)
+                    self.spin_tts_delay.setSingleStep(1)
+                    try:
+                        self.spin_tts_delay.setSuffix(" sec")
+                    except Exception:
+                        pass
+                    self.spin_tts_delay.setValue(int(secs))
+
+                try:
+                    # Ensure the spinbox widget itself is not read-only so arrows can change the value
+                    self.spin_tts_delay.setReadOnly(False)
+                    self.spin_tts_delay.setAccelerated(True)
+                    try:
+                        ro2 = self.spin_tts_delay.isReadOnly()
+                    except Exception:
+                        ro2 = None
+                    LOGGER.info("spinTTSDelay: isReadOnly(widget)=%s", ro2)
+                except Exception:
+                    pass
+                try:
+                    self.spin_tts_delay.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.UpDownArrows)
+                    self.spin_tts_delay.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+                    le2 = self.spin_tts_delay.lineEdit()
+                    if le2 is not None:
+                        le2.setReadOnly(True)
+                        le2.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+                        le2.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+                except Exception:
+                    pass
+
+                self._debug_spinbox(self.spin_tts_delay, 'spinTTSDelay:init')
+                self.spin_tts_delay.valueChanged.connect(self._on_tts_delay_changed)
+                LOGGER.info("Connecting spinTTSDelay.valueChanged -> _on_tts_delay_changed")
+                try:
+                    self.spin_tts_delay.installEventFilter(self)
+                except Exception:
+                    pass
+                self._debug_spinbox(self.spin_tts_delay, 'spinTTSDelay:post-bind')
+                try:
+                    self.spin_tts_delay.setEnabled(True)
+                except Exception:
+                    pass
+            else:
+                LOGGER.warning("spinTTSDelay not found as QDoubleSpinBox or QSpinBox")
+        except Exception as exc:
+            LOGGER.warning("Failed to initialize spinTTSDelay: %s", exc)
+
         # Now safe to refresh UI (filter_mode exists)
         self._refresh()
         self._play_token = 0  # increments each Play click to cancel prior schedules
@@ -771,6 +946,110 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
 
+    def _on_tts_repeats_changed(self, value: int) -> None:
+        try:
+            LOGGER.info(">>> _on_tts_repeats_changed fired with value=%s", value)
+            import settings
+            value = max(1, min(10, int(value)))
+            settings.TTS_REPEATS = value
+            self._persist_setting('TTS_REPEATS', value)
+            # Also update runtime constant used in this module
+            try:
+                globals()['TTS_REPEATS'] = value
+            except Exception:
+                pass
+            LOGGER.info("spinTTSRepeats changed -> %d (applied runtime)", value)
+        except Exception as exc:
+            LOGGER.warning("Failed to update TTS_REPEATS: %s", exc)
+
+    def _on_tts_delay_changed(self, value) -> None:  # value may be int or float
+        try:
+            LOGGER.info(">>> _on_tts_delay_changed fired with value=%s", value)
+            import settings
+            try:
+                secs = float(value)
+            except Exception:
+                secs = 2.0
+            secs = max(1.0, min(6.0, secs))
+            value_us = int(round(secs * 1_000_000))
+            settings.TTS_DELAY = value_us
+            self._persist_setting('TTS_DELAY', value_us)
+            # Also update runtime constant used in this module
+            try:
+                globals()['TTS_DELAY'] = value_us
+            except Exception:
+                pass
+            LOGGER.info("spinTTSDelay changed -> %.0f sec (%d µs) (applied runtime)", secs, value_us)
+        except Exception as exc:
+            LOGGER.warning("Failed to update TTS_DELAY: %s", exc)
+
+    def eventFilter(self, obj, event):  # type: ignore[override]
+        try:
+            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+                # Auto-hide settings dock when clicking outside it
+                try:
+                    self._maybe_hide_settings_on_click(event)
+                except Exception:
+                    pass
+            if event.type() == QtCore.QEvent.Type.Wheel:
+                # Disable mouse wheel changes over these spin boxes unless they have focus
+                if obj in (getattr(self, 'spin_tts_repeats', None), getattr(self, 'spin_tts_delay', None)):
+                    return True
+            if event.type() == QtCore.QEvent.Type.MouseButtonPress:
+                if obj in (getattr(self, 'spin_tts_repeats', None), getattr(self, 'spin_tts_delay', None)):
+                    LOGGER.info("Mouse pressed on %s", getattr(obj, 'objectName', lambda: '<unnamed>')())
+            if event.type() == QtCore.QEvent.Type.MouseButtonRelease:
+                if obj in (getattr(self, 'spin_tts_repeats', None), getattr(self, 'spin_tts_delay', None)):
+                    LOGGER.info("Mouse released on %s", getattr(obj, 'objectName', lambda: '<unnamed>')())
+            if event.type() == QtCore.QEvent.Type.MouseButtonDblClick:
+                if obj in (getattr(self, 'spin_tts_repeats', None), getattr(self, 'spin_tts_delay', None)):
+                    LOGGER.info("Mouse double-click on %s", getattr(obj, 'objectName', lambda: '<unnamed>')())
+            if event.type() == QtCore.QEvent.Type.FocusIn:
+                if obj in (getattr(self, 'spin_tts_repeats', None), getattr(self, 'spin_tts_delay', None)):
+                    LOGGER.info("FocusIn on %s", getattr(obj, 'objectName', lambda: '<unnamed>')())
+            if event.type() == QtCore.QEvent.Type.FocusOut:
+                if obj in (getattr(self, 'spin_tts_repeats', None), getattr(self, 'spin_tts_delay', None)):
+                    LOGGER.info("FocusOut on %s", getattr(obj, 'objectName', lambda: '<unnamed>')())
+        except Exception:
+            pass
+        return super().eventFilter(obj, event)
+
+    def _maybe_hide_settings_on_click(self, event: QtCore.QEvent) -> None:
+        """If settingsDock is visible and the click is outside its bounds, hide it."""
+        try:
+            dock = getattr(self, "settingsDock", None)
+            if dock is None:
+                dock = self.findChild(QWidget, "settingsDock")
+            if dock is None or not dock.isVisible():
+                return
+            if not isinstance(event, QtGui.QMouseEvent):
+                return
+            # Global position of the click
+            gpos = event.globalPosition().toPoint() if hasattr(event, 'globalPosition') else event.globalPos()
+            # Compute dock's global rect
+            top_left = dock.mapToGlobal(QtCore.QPoint(0, 0))
+            rect = QtCore.QRect(top_left, dock.size())
+            if not rect.contains(gpos):
+                dock.hide()
+                LOGGER.info("Settings dock hidden due to outside click")
+        except Exception as exc:
+            LOGGER.warning("Auto-hide settings failed: %s", exc)
+
+    def _persist_setting(self, name: str, value) -> None:
+        try:
+            import settings
+            path = Path(settings.__file__)
+            text = path.read_text(encoding='utf-8').splitlines()
+            updated = []
+            for line in text:
+                if line.strip().startswith(f"{name} ="):
+                    updated.append(f"{name} = {repr(value)}")
+                else:
+                    updated.append(line)
+            path.write_text("\n".join(updated) + "\n", encoding='utf-8')
+        except Exception as exc:
+            LOGGER.warning("Failed to persist %s: %s", name, exc)
+
     def on_rate_changed(self, value: int) -> None:
         """Handle changes from the Rate slider: update label, engine, and persist.
 
@@ -816,7 +1095,7 @@ class MainWindow(QMainWindow):
                 token = self._play_token
                 repeats = int(TTS_REPEATS) if TTS_REPEATS and int(TTS_REPEATS) > 0 else 1
                 self._set_busy(True)
-                QtCore.QTimer.singleShot(TTS_DELAY, lambda: self._play_repeated(repeats, token))
+                QtCore.QTimer.singleShot(int(TTS_DELAY / 1000), lambda: self._play_repeated(repeats, token))
             except Exception as exc:  # noqa: BLE001
                 LOGGER.warning("Failed to replay after rate change: %s", exc)
         except Exception as exc:  # noqa: BLE001
@@ -975,7 +1254,7 @@ class MainWindow(QMainWindow):
             repeats = int(TTS_REPEATS) if TTS_REPEATS and int(TTS_REPEATS) > 0 else 1
             self._set_busy(True)
             # Respect initial delay before starting playback
-            QtCore.QTimer.singleShot(TTS_DELAY, lambda: self._play_repeated(repeats, token))
+            QtCore.QTimer.singleShot(int(TTS_DELAY / 1000), lambda: self._play_repeated(repeats, token))
 
     def _bind(self) -> None:
         """Wire up button signals."""
@@ -1030,7 +1309,6 @@ class MainWindow(QMainWindow):
         except Exception:
             return html.escape(letter.example or "")
 
-
     def _highlight_matra_cluster(self, text: str, dep: str) -> str:
         """Highlight the *grapheme cluster(s)* that contain the given matra (dep).
 
@@ -1084,14 +1362,17 @@ class MainWindow(QMainWindow):
         """
         dep = (letter.dependent_form or "").strip()
         example = (letter.dependent_form_example or "").strip()
+        # Normalize example for emptiness/meaninglessness
+        example_norm = example.strip().lower().strip(". ")
 
         if not dep:
             return ""
 
         dep_html = f'<span style="color:#007AFF; font-weight:700;">{html.escape(dep)}</span>'
-        html_parts = [f"Dependent form: {dep_html}"]
+        html_parts = [f"Dependent form (matra): {dep_html}"]
 
-        if example:
+        # Only include an Example line if it's meaningful (not 'none', 'n/a', dashes, etc.)
+        if example_norm not in {"", "none", "no example", "n/a", "na", "—", "-"}:
             try:
                 # Split on en-dash or hyphen surrounded by spaces: "… – …" or "… - …"
                 parts = re.split(r"\s+[\u2013-]\s+", example, maxsplit=1)
@@ -1112,8 +1393,6 @@ class MainWindow(QMainWindow):
 
         return "<br>".join(html_parts)
 
-
-
     def _refresh(self) -> None:
 
         # --- Safety: avoid IndexError for single-entry test mode or empty list ---
@@ -1127,7 +1406,6 @@ class MainWindow(QMainWindow):
         if self.index < 0 or self.index >= len(self.letters):
             LOGGER.info("Index %d out of range (len=%d); resetting to 0", self.index, len(self.letters))
             self.index = 0
-
 
         """Refresh UI from current index."""
         letter = self.letters[self.index]
@@ -1151,9 +1429,9 @@ class MainWindow(QMainWindow):
         if split_index != -1:
             # Insert a newline after the punctuation
             hint_text = (
-                hint_text[: split_index + 1].strip()
-                + "\n"
-                + hint_text[split_index + 1 :].strip()
+                    hint_text[: split_index + 1].strip()
+                    + "\n"
+                    + hint_text[split_index + 1:].strip()
             )
 
         self.hint_label.setText("Hint: " + hint_text)
@@ -1191,6 +1469,29 @@ class MainWindow(QMainWindow):
                     text = self._format_dependent_info(letter)
                     self.dependent_form_label.setText(text)
                     self.dependent_form_label.setVisible(True)
+                    # Dynamically set the tooltip for dependent_form_label
+                    if self.dependent_form_label is not None:
+                        try:
+                            symbol = (letter.symbol or "").strip()
+                            dep = (letter.dependent_form or "").strip()
+                            example = (letter.dependent_form_example or "").strip()
+                            tooltip = (
+                                f"Matras (dependent forms of vowels) are special symbols that modify consonants to indicate the vowel sound that follows.\n"
+                                f"• For {symbol}: {dep}\n"
+                                f"• Dependent form: {example}\n"
+                            )
+                            # Extract Hindi word and transliteration if present
+                            # if example and example.lower().strip() not in {"none", "no example", "n/a", "", "—", "-"}:
+                            #     parts = re.split(r"\s+[\u2013-]\s+", example, maxsplit=1)
+                            #     left = parts[0].strip()
+                            #     m = re.search(r"\(([^)]+)\)", left)
+                            #     translit = m.group(1) if m else ""
+                            #     word = left.split("(")[0].strip()
+                            #     if word:
+                            #         tooltip += f"• Example: {word} ({translit})"
+                            self.dependent_form_label.setToolTip(tooltip)
+                        except Exception as exc:
+                            LOGGER.warning("Failed to set dependent_form_label tooltip: %s", exc)
                 else:
                     # Hide for consonants or when no dependent form is defined
                     try:
@@ -1206,8 +1507,14 @@ class MainWindow(QMainWindow):
             # Update matra pointer below the example
         try:
             dep = (letter.dependent_form or "").strip()
-            ex = (letter.dependent_form_example or letter.example or "").strip()
-            if hasattr(self, "matra_pointer") and self.matra_pointer is not None and dep and ex:
+            ex = (letter.dependent_form_example or "").strip()
+            ex_norm = ex.strip().lower().strip(". ")
+            if (
+                    hasattr(self, "matra_pointer") and self.matra_pointer is not None and
+                    dep and ex_norm not in {"", "none", "no example", "n/a", "na", "—", "-"} and
+                    getattr(self, "dependent_form_label", None) is not None and
+                    self.dependent_form_label.isVisible()
+            ):
                 base_font = self.dependent_form_label.font() if self.dependent_form_label else None
                 self.matra_pointer.set_example(ex, dep, base_font)
                 self.matra_pointer.updateGeometry()
@@ -1220,7 +1527,7 @@ class MainWindow(QMainWindow):
 
     def _set_scaled_image(self, image_path: Path) -> None:
         """Set image on image_label with aspect ratio preserved and transparent background.
-        Draws the scaled image centered within the label's current size.
+        Draws the scaled image centered within the label's current size, with a slight upward offset to reduce vertical gap.
         """
         try:
             if self.image_label is None:
@@ -1233,21 +1540,22 @@ class MainWindow(QMainWindow):
                 # Fallback: use pixmap's own size
                 self.image_label.setPixmap(pm)
                 return
-            scaled = pm.scaled(label_size, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+            scaled = pm.scaled(label_size, Qt.AspectRatioMode.KeepAspectRatio,
+                               Qt.TransformationMode.SmoothTransformation)
             # Compose onto a fully transparent canvas the size of the label
             canvas = QPixmap(label_size)
             canvas.fill(Qt.GlobalColor.transparent)
             painter = QPainter(canvas)
             try:
                 x = (label_size.width() - scaled.width()) // 2
-                y = (label_size.height() - scaled.height()) // 2
+                # Reduce vertical padding by shifting image up 5px (minimum y=0)
+                y = max(0, (label_size.height() - scaled.height()) // 2 - 5)
                 painter.drawPixmap(x, y, scaled)
             finally:
                 painter.end()
             self.image_label.setPixmap(canvas)
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("_set_scaled_image failed: %s", exc)
-
 
     def _set_busy(self, is_busy: bool) -> None:
         """Enable/disable controls while audio is playing."""
@@ -1302,10 +1610,10 @@ class MainWindow(QMainWindow):
                 return
             if times_left > 1:
                 # Gap between repeats
-                QtCore.QTimer.singleShot(TTS_DELAY, lambda: self._play_repeated(times_left - 1, token))
+                QtCore.QTimer.singleShot(int(TTS_DELAY / 1000), lambda: self._play_repeated(times_left - 1, token))
             else:
                 # After final play, re-enable controls and, if in continuous mode, advance after interval
-                QtCore.QTimer.singleShot(TTS_DELAY, lambda: self._set_busy(False))
+                QtCore.QTimer.singleShot(int(TTS_DELAY / 1000), lambda: self._set_busy(False))
                 if getattr(self, "_continuous_active", False) and token == getattr(self, "_play_token", 0):
                     next_gap = int(getattr(self, "_continuous_delay_ms", 3000))
                     QtCore.QTimer.singleShot(next_gap, lambda: self._continuous_advance_and_play(token))
@@ -1354,6 +1662,35 @@ class MainWindow(QMainWindow):
         except Exception:
             # Don't let UI toggling crash the app
             pass
+
+    def _debug_spinbox(self, sb: QWidget, name: str) -> None:
+        """Log useful diagnostics for a spinbox-like widget."""
+        try:
+            cls = type(sb).__name__
+            enabled = sb.isEnabled()
+            fp = sb.focusPolicy() if hasattr(sb, "focusPolicy") else None
+            bs = None
+            try:
+                bs = sb.buttonSymbols()  # QAbstractSpinBox
+            except Exception:
+                pass
+            minimum = sb.minimum() if hasattr(sb, "minimum") else None
+            maximum = sb.maximum() if hasattr(sb, "maximum") else None
+            val = sb.value() if hasattr(sb, "value") else None
+            step = None
+            try:
+                step = sb.singleStep()
+            except Exception:
+                pass
+            decimals = None
+            try:
+                decimals = sb.decimals()  # only on QDoubleSpinBox
+            except Exception:
+                pass
+            LOGGER.info("[%s] class=%s enabled=%s focus=%s btnSymbols=%s min=%s max=%s step=%s value=%s decimals=%s",
+                        name, cls, enabled, fp, bs, minimum, maximum, step, val, decimals)
+        except Exception as exc:
+            LOGGER.warning("debug spinbox failed for %s: %s", name, exc)
 
     def on_settings_clicked(self) -> None:
         """Toggle Settings: if hidden, show floating at top-left; if visible, hide."""
@@ -1593,7 +1930,7 @@ class MainWindow(QMainWindow):
                 token = self._play_token
                 repeats = int(TTS_REPEATS) if TTS_REPEATS and int(TTS_REPEATS) > 0 else 1
                 self._set_busy(True)
-                QtCore.QTimer.singleShot(TTS_DELAY, lambda: self._play_repeated(repeats, token))
+                QtCore.QTimer.singleShot(int(TTS_DELAY / 1000), lambda: self._play_repeated(repeats, token))
 
     def on_next(self) -> None:
         """Go to next letter if available; optionally auto-play sound with initial delay."""
@@ -1608,7 +1945,7 @@ class MainWindow(QMainWindow):
                 token = self._play_token
                 repeats = int(TTS_REPEATS) if TTS_REPEATS and int(TTS_REPEATS) > 0 else 1
                 self._set_busy(True)
-                QtCore.QTimer.singleShot(TTS_DELAY, lambda: self._play_repeated(repeats, token))
+                QtCore.QTimer.singleShot(int(TTS_DELAY / 1000), lambda: self._play_repeated(repeats, token))
 
     def on_play(self) -> None:
         """Play the associated sound for the current letter (with repeats)."""
@@ -1690,6 +2027,8 @@ def main() -> int:
 # ----------------------------------------------------------------------------
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
     # [Prompt: remove stray nested on_settings_clicked; method now lives on MainWindow]
 
     def resizeEvent(self, event):  # type: ignore[override]
