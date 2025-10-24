@@ -1,0 +1,395 @@
+letters:
+- symbol: अ
+  type: vowel
+  dependent_form: (None - default sound of a consonant)
+  pronunciation: a
+  english_approx: '''u'' as in umbrella'
+  hint: A short, neutral vowel sound.
+  example: अनार (anar) – Pomegranate
+  dependent_form_example: None
+
+- symbol: आ
+  type: vowel
+  dependent_form: ा
+  pronunciation: aa
+  english_approx: '''a'' as in father'
+  hint: A long, deep 'ah' sound. Twice as long as 'अ', the previous sound.
+  example: आम (aam) – Mango
+  dependent_form_example: सा (sā) – That
+
+- symbol: इ
+  type: vowel
+  dependent_form: ि
+  pronunciation: i
+  english_approx: '''i'' as in sit'
+  hint: A short, crisp 'i' sound.
+  example: इंद्रधनुष (indradhanush) – Rainbow
+  dependent_form_example: बिल्ली (billi) – Cat
+
+- symbol: ई
+  type: vowel
+  dependent_form: ी
+  pronunciation: ee
+  english_approx: '''ee'' as in seed'
+  hint: A long 'ee' sound. Twice as long as 'इ', the previous sound.
+  example: ईख (ikh) – Sugarcane
+  dependent_form_example: सी (sī) – Line
+
+- symbol: उ
+  type: vowel
+  dependent_form: ु
+  pronunciation: u
+  english_approx: '''u'' as in put'
+  hint: A short, soft 'u' sound.
+  example: उल्लू (ulloo) – Owl
+  dependent_form_example: बुजुर्ग (bujurg) – Elder
+
+- symbol: ऊ
+  type: vowel
+  dependent_form: ू
+  pronunciation: oo
+  english_approx: '''oo'' as in moon'
+  hint: A long 'oo' sound. Twice as long as 'उ', the previous sound.
+  example: ऊन (oon) – Wool
+  dependent_form_example: खूबसूरत (khūbasūrat) – Beautiful
+
+- symbol: ए
+  type: vowel
+  dependent_form: े
+  pronunciation: e
+  english_approx: '''e'' as in egg or bake'
+  hint: A long 'ay' sound. It is a single, pure vowel.
+  example: एड़ी (edi) – Heel
+  dependent_form_example: पेड़ (peṛ) – Tree
+
+- symbol: ऐ
+  type: vowel
+  dependent_form: ै
+  pronunciation: ai
+  english_approx: '''a'' as in cat'
+  hint: A short, open diphthong. Sounds like the 'a' as in 'cat'.
+  example: ऐनक (ainak) – Spectacles
+  dependent_form_example: बैठ (baiṭh) – Sit
+
+- symbol: ओ
+  type: vowel
+  dependent_form: ो
+  pronunciation: o
+  english_approx: '''o'' as in open'
+  hint: A long, pure 'oh' sound. Round your lips.
+  example: ओखली (okhli) – Mortar
+  dependent_form_example: मोती (motī) – Pearl
+- symbol: औ
+  type: vowel
+  dependent_form: ौ
+  pronunciation: au
+  english_approx: '''ou'' as in couch'
+  hint: A diphthong, like 'aw' as in 'saw'.
+  example: औरत (aurat) – Woman
+  dependent_form_example: धौ (dhau) – A type of waterfowl
+
+- symbol: अं
+  type: vowel
+  dependent_form: ं (Bindu)
+  pronunciation: am
+  english_approx: '''n'' as in song or sun'
+  hint: Nasalizes the preceding vowel. Like the 'n' in the French 'bon'.
+  example: अंगूर (angoor) – Grapes
+  dependent_form_example: अंश (aṁś) – Portion
+
+- symbol: अः
+  type: vowel
+  dependent_form: ः (Visarg)
+  pronunciation: ah
+  english_approx: '''h'' as in fuh-h-h'
+  hint: A soft, breathy exhalation after the vowel. Rare in common speech.
+  example: अः (aha) – Sigh
+  dependent_form_example: अः (aḥ) – Ah
+
+- symbol: क
+  type: consonant
+  dependent_form: ''
+  pronunciation: ka
+  english_approx: '''k'' as in ''kite'''
+  hint: Consonant sound, produced at the back of the mouth (velar).
+  example: कबूतर (kabootar) – Pigeon
+
+- symbol: ख
+  type: consonant
+  dependent_form: ''
+  pronunciation: kha
+  english_approx: '''kh'' as in ''khaki'''
+  hint: Aspirated version of 'क'. Pronounced with a burst of air.
+  example: खरगोश (khargosh) – Rabbit
+
+- symbol: ग
+  type: consonant
+  dependent_form: ''
+  pronunciation: ga
+  english_approx: '''g'' as in ''go'''
+  hint: Voiced velar sound.
+  example: गमला (gamla) – Pot
+
+- symbol: घ
+  type: consonant
+  dependent_form: ''
+  pronunciation: gha
+  english_approx: aspirated 'g'
+  hint: Aspirated version of 'ग'.
+  example: घड़ी (ghadi) – Clock
+
+- symbol: ङ
+  type: consonant
+  dependent_form: ''
+  pronunciation: nga
+  english_approx: '''ng'' as in ''sing'''
+  hint: Velar nasal sound.
+  example: आँगन (angan) – Courtyard
+
+- symbol: च
+  type: consonant
+  dependent_form: ''
+  pronunciation: cha
+  english_approx: '''ch'' as in ''chair'''
+  hint: Palatal unaspirated sound.
+  example: चाबी (chabi) – Key
+
+- symbol: छ
+  type: consonant
+  dependent_form: ''
+  pronunciation: chha
+  english_approx: aspirated 'ch'
+  hint: Palatal aspirated sound.
+  example: छाता (chhata) – Umbrella
+
+- symbol: ज
+  type: consonant
+  dependent_form: ''
+  pronunciation: ja
+  english_approx: '''j'' as in ''jam'''
+  hint: Voiced palatal sound.
+  example: जमीन (jameen) – Earth
+
+- symbol: झ
+  type: consonant
+  dependent_form: ''
+  pronunciation: jha
+  english_approx: aspirated 'j'
+  hint: Aspirated voiced palatal sound.
+  example: झरना (jharna) – Waterfall
+
+- symbol: ञ
+  type: consonant
+  dependent_form: ''
+  pronunciation: nya
+  english_approx: as in 'canyon'
+  hint: Palatal nasal sound.
+  example: न्याय (nyaay) – Justice
+
+- symbol: ट
+  type: consonant
+  dependent_form: ''
+  pronunciation: ta
+  english_approx: retroflex 't'
+  hint: Produced by curling the tongue backward.
+  example: टोपी (topi) – Hat
+
+- symbol: ठ
+  type: consonant
+  dependent_form: ''
+  pronunciation: tha
+  english_approx: aspirated retroflex 't'
+  hint: Aspirated form of 'ट'.
+  example: ठंड (thand) – Cold
+
+- symbol: ड
+  type: consonant
+  dependent_form: ''
+  pronunciation: da
+  english_approx: retroflex 'd'
+  hint: Tongue curled backward.
+  example: डमरू (damru) – Drum
+
+- symbol: ढ
+  type: consonant
+  dependent_form: ''
+  pronunciation: dha
+  english_approx: aspirated retroflex 'd'
+  hint: Aspirated form of 'ड'.
+  example: ढोल (dhol) – Drum
+
+- symbol: ण
+  type: consonant
+  dependent_form: ''
+  pronunciation: na
+  english_approx: retroflex 'n'
+  hint: Produced with the tongue curled back.
+  example: गणेश (ganesh) – Lord Ganesha
+
+- symbol: त
+  type: consonant
+  dependent_form: ''
+  pronunciation: ta
+  english_approx: dental 't'
+  hint: Touch the tongue to the upper teeth.
+  example: तरबूज (tarbuj) – Watermelon
+
+- symbol: थ
+  type: consonant
+  dependent_form: ''
+  pronunciation: tha
+  english_approx: aspirated dental 't'
+  hint: Aspirated version of 'त'.
+  example: थाली (thaali) – Plate
+
+- symbol: द
+  type: consonant
+  dependent_form: ''
+  pronunciation: da
+  english_approx: dental 'd'
+  hint: Touch the tongue to the upper teeth.
+  example: दरवाज़ा (darwaza) – Door
+
+- symbol: ध
+  type: consonant
+  dependent_form: ''
+  pronunciation: dha
+  english_approx: aspirated dental 'd'
+  hint: Aspirated version of 'द'.
+  example: धन (dhan) – Wealth
+
+- symbol: न
+  type: consonant
+  dependent_form: ''
+  pronunciation: na
+  english_approx: '''na'' as in ''nap'''
+  hint: Dental nasal sound.
+  example: नदी (nadi) – River
+
+- symbol: प
+  type: consonant
+  dependent_form: ''
+  pronunciation: pa
+  english_approx: '''p'' as in ''pen'''
+  hint: Bilabial unaspirated sound.
+  example: पानी (pani) – Water
+
+- symbol: फ
+  type: consonant
+  dependent_form: ''
+  pronunciation: pha
+  english_approx: '''ph'' as in ''photo'''
+  hint: Aspirated version of 'प'.
+  example: फल (phal) – Fruit
+
+- symbol: ब
+  type: consonant
+  dependent_form: ''
+  pronunciation: ba
+  english_approx: b as in 'bat'
+  hint: Bilabial voiced sound.
+  example: बंदर (bandar) – Monkey
+
+- symbol: भ
+  type: consonant
+  dependent_form: ''
+  pronunciation: bha
+  english_approx: aspirated 'b'
+  hint: Aspirated version of 'ब'.
+  example: भालू (bhalu) – Bear
+
+- symbol: म
+  type: consonant
+  dependent_form: ''
+  pronunciation: ma
+  english_approx: as in 'man'
+  hint: Bilabial nasal sound.
+  example: मछली (machhli) – Fish
+
+- symbol: य
+  type: consonant
+  dependent_form: ''
+  pronunciation: ya
+  english_approx: '''y'' as in ''yes'''
+  hint: Palatal semivowel.
+  example: यात्रा (yatra) – Journey
+
+- symbol: र
+  type: consonant
+  dependent_form: ''
+  pronunciation: ra
+  english_approx: '''r'' as in ''run'''
+  hint: Alveolar trill sound.
+  example: रस (ras) – Juice
+
+- symbol: ल
+  type: consonant
+  dependent_form: ''
+  pronunciation: la
+  english_approx: '''la'' as in ''lamp'''
+  hint: Lateral alveolar sound.
+  example: लड्डू (laddu) – Sweet
+
+- symbol: व
+  type: consonant
+  dependent_form: ''
+  pronunciation: va
+  english_approx: '''va'' as in ''van'''
+  hint: Labiodental approximant sound.
+  example: वृक्ष (vriksh) – Tree
+
+- symbol: श
+  type: consonant
+  dependent_form: ''
+  pronunciation: sha
+  english_approx: '''sh'' as in ''shut'''
+  hint: Palatal fricative sound.
+  example: शेर (sher) – Lion
+
+- symbol: ष
+  type: consonant
+  dependent_form: ''
+  pronunciation: shha
+  english_approx: retroflex 'sh'
+  hint: Retroflex fricative sound.
+  example: षट्कोण (shatkone) – Hexagon
+
+- symbol: स
+  type: consonant
+  dependent_form: ''
+  pronunciation: sa
+  english_approx: '''s'' as in ''sun'''
+  hint: Dental fricative sound.
+  example: सूरज (sooraj) – Sun
+
+- symbol: ह
+  type: consonant
+  dependent_form: ''
+  pronunciation: ha
+  english_approx: '''ha'' as in ''hat'''
+  hint: Glottal fricative sound.
+  example: हाथी (haathi) – Elephant
+
+- symbol: क्ष
+  type: consonant
+  dependent_form: ''
+  pronunciation: ksha
+  english_approx: combination of 'k', 'sh'
+  hint: Conjunct consonant pronounced together.
+  example: क्षेत्र (kshetra) – Field
+
+- symbol: त्र
+  type: consonant
+  dependent_form: ''
+  pronunciation: tra
+  english_approx: combination of 't', 'r'
+  hint: Conjunct consonant pronounced together.
+  example: त्रिकोण (trikon) – Triangle
+
+- symbol: ज्ञ
+  type: consonant
+  dependent_form: ''
+  pronunciation: gya
+  english_approx: combination of 'g', 'ya'
+  hint: Conjunct consonant pronounced together.
+  example: ज्ञान (gyaan) – Knowledge
