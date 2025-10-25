@@ -245,7 +245,7 @@ class HindiTTSPlayerMac:
     Requires: pyobjc (install with: `python3 -m pip install pyobjc`)
     """
 
-    def __init__(self, rate: int = 200, volume: float = 1.0) -> None:
+    def __init__(self, rate: int = 160, volume: float = 1.0) -> None:
         try:
             from AppKit import NSSpeechSynthesizer  # type: ignore
         except Exception as exc:  # noqa: BLE001

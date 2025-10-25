@@ -1,7 +1,7 @@
 letters:
 - symbol: अ
   type: vowel
-  dependent_form: (None - default sound of a consonant)
+  dependent_form: Consonant's default sound
   pronunciation: a
   english_approx: '''u'' as in umbrella'
   hint: A short, neutral vowel sound.
